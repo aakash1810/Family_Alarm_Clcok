@@ -1,0 +1,46 @@
+//nodeMCU Code
+
+//********serialnodemcu**********************************************************************************
+	File Name:	serialnodemcu.c
+	Author:		ASolanki
+	Date:		11/18/2020
+	Modified:	None
+	© Fanshawe College, 2016
+
+Description: This test code is written to send character “S” to mbed LPC1768 module to start displaying time on seven segment display module
+********************************************************************************************************/
+// Preprocessor ========================================================================
+#include <SoftwareSerial.h>
+
+// Global variables==========================================================
+SoftwareSerial s(3,1);
+char c, hour=0,mins=0;
+char hold[]={"hello World\n\r"};
+
+/**************setup*************************************************************************************
+Author:		ASolanki
+Date:		11/18/2020
+Modified:	None
+Desc:		the setup function initializes serial communication
+Input:		None
+Returns:	None
+*********************************************************************************************************/
+void setup() 
+{
+        Serial.begin(9600);
+        s.begin(9600);
+        Serial.println("Starting...");
+}
+/**************loop:*************************************************************************************
+Author:		ASolanki
+Date:		11/18/2020
+Modified:	None
+Desc:		the loop function runs over and over again forever and send character on serial
+Input:		None
+Returns:	None
+*********************************************************************************************************/
+void loop() 
+{ 
+       s.write("S");  
+       delay(1000);
+}

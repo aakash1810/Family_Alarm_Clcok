@@ -1,0 +1,124 @@
+//********webServer:**********
+/*******************************************************************************************************
+	File Name:	webServer.c
+	Author:		ASolanki
+	Date:		11/14/2020
+	Modified:	None
+	© Fanshawe College, 2016
+
+Description: This test code is written to accept the alarm time from web page and store                             
+                                 received data into two variables.
+********************************************************************************************************/
+
+// Preprocessor ======================================================================
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+
+// Constants ======================================================================
+
+// Global Variables ======================================================================
+const char* ssid = "Nk";
+const char* password = "123456789";
+const char* PARAM_HOURS = "Hours";
+const char* PARAM_MINUTES = "Minutes";
+
+AsyncWebServer server(80);
+// HTML web page to handle 2 input fields (hours, minutes)
+const char index_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html><head>
+  <title>Webpage for setting alarm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body><t><t><t><t><t>Set Alarm Time <br><br>
+  <form action="/get">
+    Hours and Minutes<br> <input type="number" name="Hours"> : <input type="number" name="Minutes">
+    <input type="submit" value="ENTER">
+  </form><br>
+</body></html>)rawliteral";
+
+
+// Functions ======================================================================
+/**************notFound:******************************************************************* ***********
+Author:		ASolanki
+Date:		11/14/2020
+Modified:	None
+Desc:		Printing error 404, if nothing found on web server.
+Input:		AsyncWebServerRequest *request, which request for the webserver response
+Returns:	None
+********************************************************************************************************/
+void notFound(AsyncWebServerRequest *request)
+{
+  request->send(404, "text/plain", "Not found");
+}	//eo notFound::
+
+/**************setup:******************************************************************* ***********
+Author:		ASolanki
+Date:		11/14/2020
+Modified:	None
+Desc:		Set a webpage to accept alarm time from the user.
+Input:		None
+Returns:	None
+********************************************************************************************************/
+void setup()
+ {
+ Serial.begin(115200);
+ WiFi.mode(WIFI_STA);
+ WiFi.begin(ssid, password);
+if (WiFi.waitForConnectResult() != WL_CONNECTED)
+{
+    		Serial.println("WiFi Failed!");
+    		return;
+ 		}
+ Serial.println();
+ Serial.print("IP Address: ");
+ Serial.println(WiFi.localIP());
+
+  	// Send web page with input fields to client
+server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+{
+request->send_P(200, "text/html", index_html);
+ });
+
+ 	// Send a GET request to <ESP_IP>/get?input1=<inputMessage>
+ 	server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request)
+{
+String hours;
+   		String minutes;
+ if (request->hasParam(PARAM_HOURS)) 
+ {
+ hours = request->getParam(PARAM_HOURS)->value();
+ minutes = request->getParam(PARAM_MINUTES)->value();
+ }
+    		else
+{
+hours = "00";
+      			minutes = "00";
+   		}
+ //  Serial.println("Alarm time is ");
+ Serial.println(hours);
+ // Serial.println(":");
+ Serial.println(minutes);
+request->send(200, "text/html", "Alarm is set for " + hours + " : " + minutes + "<br><a href=\"/\">Return to Home Page</a>");
+  });
+  server.onNotFound(notFound);
+  server.begin();
+}
+
+/**************loop:*************************************************************************************
+Author:		ASolanki
+Date:		11/14/2020
+Modified:	None
+Desc:		the loop function runs over and over again forever. 
+Input:		None
+Returns:	None
+*********************************************************************************************************/
+void loop(void) 
+{
+	//Nothing for now and this will have commands in future to send data to mbed.
+}	//eo loop::
+
+ 
+
+
+

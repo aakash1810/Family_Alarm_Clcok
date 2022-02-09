@@ -1,0 +1,47 @@
+//********Test Code**********
+/*******************************************************************************************************
+	File Name:	testcode.c
+	Author:		ASolanki
+	Date:		10/30/2020
+	Modified:	None
+	© Fanshawe College, 2016
+
+	Description: This test code is written to test basic input output function of ESP8266
+********************************************************************************************************/
+// Preprocessor ======================================================================
+// Constants ======================================================================
+// Global Variables ======================================================================
+// Functions ======================================================================
+/**************setup************************************************************************************
+Author:		RPandya
+Date:		10/30/2020
+Modified:	None
+Desc:		setup all GPIO as input or output. This function runs one time
+Input:		None
+Returns:	None
+********************************************************************************************************/
+void setup(void) 
+{
+	pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  	pinMode(5, OUTPUT);
+}//eo setup::
+
+/**************loop*************************************************************************************
+Author:		RPandya
+Date:		10/30/2020
+Modified:	None
+Desc:		the loop function runs over and over again forever. Blink LED at a second
+Input:		None
+Returns:	None
+*********************************************************************************************************/
+void loop(void) 
+{
+  	digitalWrite(BUILTIN_LED, LOW);  // Turn the LED on (Note : LOW is the voltage level
+                                    	 	        // but actually the LED is on; this is because 
+                                    	                   // it is active low on the ESP-01)
+  	digitalWrite(5, LOW);
+  	delay(1000);                     		 // Wait for a second
+  	digitalWrite(BUILTIN_LED, HIGH);     // Turn the LED off by making the voltage HIGH
+  	digitalWrite(5, HIGH);
+  	delay(1000);                      // Wait for two seconds (to demonstrate the active low LED)
+}//eo loop::

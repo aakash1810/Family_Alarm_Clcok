@@ -1,0 +1,77 @@
+/mbed (LPC1768) Code
+
+//********serialDisplayTest**********
+/*******************************************************************************************************
+	File Name:	serialDisplayTest.c
+	Author:		ASolanki
+	Date:		11/18/2020
+	Modified:	None
+	© Fanshawe College, 2016
+
+Description: This test code is written to accept the starting character 'S' and show the time on display
+********************************************************************************************************/
+
+// Preprocessor ========================================================================
+#include "mbed.h"
+#include <TM1637.h>
+
+// Constants =======================================================================
+#define TRUE    1
+#define FALSE   0
+
+// Global Variables =======================================================================
+
+TM1637_CATALEX display(p6, p7);
+Serial pc(USBTX,USBRX);
+Serial nodemcu(p9,p10);
+Timer t;
+int hour=0;
+int min=0,i=0;
+/*******************************************************************************************************
+***************************************main*************************************************************
+********************************************************************************************************/
+
+int main()
+{
+     display.setDisplay( TRUE ); // turn on the display
+     display.cls(); // clear the display
+     nodemcu.baud(9600);
+     
+     display.setIcon(TM1637_CATALEX::COL2);
+     
+     while(1)
+     {
+         
+         if(nodemcu.readable())
+         {
+             char hold=nodemcu.getc();
+             pc.printf("%c\n\r",hold);
+             while(hold=='S')
+             {
+                 for(i =0; i<=10; i++)
+                 {
+                     display.printf("%02i,%02i", hour,min);
+                     wait(1);
+                     min++;
+                     if(min==10)
+                     {
+                         min=0;
+                         hour++;
+                         if(hour==10)
+                         {
+                             hour=0;
+                             i=0;
+                         }
+                     }
+                 }
+                  
+             }
+             if(hold!='S')
+             {
+              	
+pc.printf("Wrong Character\n\r");
+             }
+         } 
+    }// eo while::         
+}// eo main::
+
